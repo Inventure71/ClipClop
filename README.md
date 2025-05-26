@@ -47,7 +47,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install dependencies
-pip install pyperclip opencv-python pyrealsense2 netifaces rumps pyinstaller
+pip install -r requirements.txt
 ```
 
 ### Step 2: Create the App Bundle
