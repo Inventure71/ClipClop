@@ -10,6 +10,9 @@ import struct # For packing/unpacking message length
 import os # For config file path
 import sys # For platform check (though primarily macOS focused)
 
+
+# TODO: add bluetooth support
+
 # Attempt to import netifaces, otherwise fall back
 try:
     import netifaces
