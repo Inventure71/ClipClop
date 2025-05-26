@@ -1,9 +1,26 @@
+import os
+import sys
 import rumps
 import threading
 import clipboard
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        # For .app bundles, _MEIPASS usually points to Contents/MacOS (where the executable is)
+        # Data files added with --add-data "file:." usually go into Contents/Resources
+        base_path = sys._MEIPASS
+        # Path to Resources dir from Contents/MacOS (where _MEIPASS points)
+        # is one level up (to Contents) and then into 'Resources'
+        return os.path.join(os.path.dirname(base_path), 'Resources', relative_path)
+    except Exception:
+        # _MEIPASS not defined, so running in development (not frozen)
+        # Or some other issue, fallback to current directory
+        return os.path.join(os.path.abspath("."), relative_path)
+
 APP_NAME = "ClipClop"
-ICON_PATH = "icon.icns"
+ICON_PATH = resource_path("icon.icns")
 
 INTERVAL_OPTIONS = [
     ("Disabled (Manual Only)", 0),

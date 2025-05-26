@@ -11,9 +11,7 @@ import os # For config file path
 import sys # For platform check
 
 # TODO: add bluetooth support
-# TODO: remove app icon from bottom bar and alt-tab view (make sure it is a top-bar app only)
-#       (This is achieved by setting LSUIElement to True (boolean YES) in the app's Info.plist
-#        when packaging as a .app bundle, e.g., using py2app or similar tools.)
+# TODO: (DONE) remove app icon from bottom bar and alt-tab view (make sure it is a top-bar app only)
 
 # Attempt to import PyObjC for efficient clipboard monitoring on macOS
 try:
