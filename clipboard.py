@@ -12,6 +12,9 @@ import sys # For platform check
 
 # TODO: add bluetooth support
 # TODO: (DONE) remove app icon from bottom bar and alt-tab view (make sure it is a top-bar app only)
+# TODO: add QR code to connect them (and hide in it the encryption key)
+# TODO: add encryption key
+# TODO: add that the phone also sends back the clipboard content to the computer
 
 # Attempt to import PyObjC for efficient clipboard monitoring on macOS
 try:
