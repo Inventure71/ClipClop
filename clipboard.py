@@ -12,6 +12,7 @@ import sys # For platform check (though primarily macOS focused)
 
 
 # TODO: add bluetooth support
+# TODO: remove app icon from bottom bar and alt-tab view (make sure it is a top-bar app only)
 
 # Attempt to import netifaces, otherwise fall back
 try:
