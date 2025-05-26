@@ -2,8 +2,8 @@ import rumps
 import threading
 import clipboard
 
-APP_NAME = "Clipboard Sync"
-ICON_PATH = "icon.png"
+APP_NAME = "ClipClop"
+ICON_PATH = "icon.icns"
 
 INTERVAL_OPTIONS = [
     ("Disabled (Manual Only)", 0),
