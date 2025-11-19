@@ -9,3 +9,6 @@ pyobjc-framework-Cocoa==11.0
 pyperclip==1.9.0
 rumps==0.4.0
 setuptools==80.8.0
+cryptography==42.0.5
+qrcode==8.2
+pillow==10.1.0
