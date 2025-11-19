@@ -93,6 +93,7 @@ class ClipboardServer:
         try:
             self.socket.bind((self.host, self.port))
             self.socket.listen()
+            # Increase socket timeout for accept call itself, though it doesn't matter much if we catch timeout
             self.socket.settimeout(1.0)
         except OSError as e:
             print(f"[SERVER] CRITICAL: Could not bind to port {self.port}: {e}")
@@ -113,22 +114,44 @@ class ClipboardServer:
 
     def _handle_new_connection(self, conn, addr):
         print(f"[SERVER] Client connected: {addr}")
-        conn.setblocking(True)
+        
+        # IMPORTANT: Disable timeout initially (blocking mode) or set it very high for keep-alive.
+        # Android keeps connection open indefinitely.
+        # BUT we need to be able to check stop_event.
+        # So we set a timeout (e.g. 1.0s) but we MUST handle it as "idle" not "error".
+        # The protocol.py changes now correctly raise socket.timeout on idle read of header.
+        conn.settimeout(1.0) 
+        
+        # Enable Keep-Alive on TCP level
+        try:
+            conn.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+            # Optional: Platform specific keep-alive settings could go here
+        except Exception:
+            pass
+
         with self.clients_lock:
             self.clients.append(conn)
         
-        # Send current configuration (if needed) or just start loop
-        # For now, just start the loop
         t = threading.Thread(target=self._client_loop, args=(conn, addr), daemon=True)
         t.start()
 
     def _client_loop(self, conn, addr):
         try:
             while not self.stop_event.is_set():
-                message = receive_message(conn, self.crypto_manager)
-                if message is None:
-                    break
-                self.on_message_received(message, str(addr))
+                try:
+                    message = receive_message(conn, self.crypto_manager)
+                    if message is None:
+                        # Normal closure or error that receive_message handled
+                        break
+                    self.on_message_received(message, str(addr))
+                except socket.timeout:
+                    # Timeout waiting for message header - this is normal for idle keep-alive connection.
+                    # Just continue loop to check stop_event.
+                    continue
+                except OSError as e:
+                     # Catch explicitly closed socket errors if they leak through
+                     print(f"[SERVER] Socket error with client {addr}: {e}")
+                     break
         except Exception as e:
             print(f"[SERVER] Error with client {addr}: {e}")
         finally:
@@ -143,4 +166,3 @@ class ClipboardServer:
         with self.clients_lock:
             if conn in self.clients:
                 self.clients.remove(conn)
-
